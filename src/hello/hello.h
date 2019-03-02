@@ -1,4 +1,4 @@
-#include<iostream>
+#include<cstdio>
 
 class Hello{
     Hello(const Hello &)=delete;
@@ -6,6 +6,6 @@ class Hello{
     ~Hello()=delete;
 
     static void Greeting(){
-        std::cout<<"Hello World!\n";
+        std::printf<<"Hello World!\n";
     }
 }
