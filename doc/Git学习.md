@@ -1,4 +1,6 @@
 # 内容概要
+1. Git是什么以及起源
+2. Git中的
 # 参考文献
 1. Pro Git
 1. [git diff命令输出解读-阿里云社区](https://yq.aliyun.com/articles/658560)
@@ -45,12 +47,12 @@ $ git init
 列出工作目录下的文件
 ```sh
 $ ls
-Git学习.md*  rc/  README.md  src/  Ubuntu-18.04安装与配置.md
+doc/  Git学习(一).md  README.md  src/  Ubuntu-18.04安装与配置.md
 ```
-其中，*rc*是存放资源文件的文件夹，*src*是存放代码的文件夹，*Git学习.md*是本文的离线版。在本次写作过程中，*rc*下存放的图片会不断增加，*.md*也会不断被修改，在写作完成之前，我们不希望其纳入Git的管理。在这种情况下，我们可以创建一个名为.gitignore的文件，列出要忽略的文件。
+其中，*doc*是存放文档的文件夹，*src*是存放代码的文件夹，*Git学习(一).md*是本文的离线版。在本次写作过程中，*doc*下存放的图片会不断增加，*.md*也会不断被修改，在写作完成之前，我们不希望其纳入Git的管理。在这种情况下，我们可以创建一个名为.gitignore的文件，列出要忽略的文件。
 ```sh
 $ cat .gitignore
-/rc
+/doc
 *.md
 ```
 ## 3.3 暂存和取消暂存文件
@@ -76,7 +78,7 @@ No commits yet
 Changes to be committed:
   (use "git rm --cached <file>..." to unstage)
 	new file:   .gitignore
-	new file:   "Git学习.md"
+	new file:   "Git学习(一).md"
 	new file:   README.md
 	new file:   "Ubuntu-18.04安装与配置.md"
 ```
@@ -85,13 +87,13 @@ Changes to be committed:
 $ git rm --cahed *.md
 error: the following file has staged content different from both the
 file and the HEAD:
-    Git学习.md
+    Git学习(一).md
 (use -f to force removal)
 ```
-好像出了问题？这是因为我在暂存*Git学习.md*之后，又修改*Git学习.md*(往里面添加了”是可以的，但是我们现在并不想...从暂存区删掉“)，导致暂存区域和工作目录下的*Git学习.md*文件产生了差异，现在再删除暂存区的*Git学习.md*会导致修改前的版本丢失，所以Git不让我们删除，这是一种保护机制。但我们自己知道这操作没问题，来吧，暴力点
+好像出了问题？这是因为我在暂存*Git学习(一).md*之后，又修改*Git学习(一).md*(往里面添加了”是可以的，但是我们现在并不想...从暂存区删掉“)，导致暂存区域和工作目录下的*Git学习(一).md*文件产生了差异，现在再删除暂存区的*Git学习(一).md*会导致修改前的版本丢失，所以Git不让我们删除，这是一种保护机制。但我们自己知道这操作没问题，来吧，暴力点
 ```sh
 $ git rm --cahed *.md -f
-rm 'Git学习.md'
+rm 'Git学习(一).md'
 rm 'README.md'
 rm 'Ubuntu-18.04安装与配置.md'
 $ git status
@@ -255,9 +257,8 @@ Date:   Sat Mar 2 14:21:38 2019 +0800
 一个常用的选项是 -p,用来显示每次提交的内容差异。你也可以加上 -<n> 来仅显示最近n次提交。git log参数超多，毫无疑问有各种筛选功能，具体请看man git log。
 
 ## 3.8 文件(夹)的移动和改名
-将* *.md*文件放入其专属的文件夹内
+与Linux*mv*命令相似，文件(夹)的移动和改名共用同一个命令*git mv*，修改名含有路径参数即是移动。将* *.md*文件放入其专属的文件夹内
 ```sh
-$ mkdir doc
 $ git mv Ubuntu-18.04安装与配置.md doc/Ubuntu-18.04安装与配置.md
 fatal: not under version control, source=Ubuntu-18.04安装与配置.md, destination=doc/Ubuntu-18.04安装与配置.md
 ``` 
@@ -265,7 +266,7 @@ fatal: not under version control, source=Ubuntu-18.04安装与配置.md, destina
 ```
 $ git add *.md -f
 $ git mv Ubuntu-18.04安装与配置.md doc/Ubuntu-18.04安装与配置.md
-$ git mv Git学习.md doc/Git学习.md
+$ git mv Git学习(一).md doc/Git学习(一).md
 $ git reset HEAD -- doc/ *.md
 $ git reset HEAD -- README.md
 $ git status
@@ -295,11 +296,14 @@ origin
 取消忽视文件,并快照存到版本库
 ```sh
 $ cat .gitignore
+$ git add .
+$ git commit -m "add git basics"
 ```
 最后我们将版本库推送到服务器
-```git
+```sh
 $ git push origin master
 ```
+
 
 
 
