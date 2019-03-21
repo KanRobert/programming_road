@@ -104,7 +104,7 @@ Changes to be committed:
   (use "git rm --cached <file>..." to unstage)
 	new file:   .gitignore
 ```
-有一个命令*git reset HEAD -- <file>* 功能与 *git rm --cached <file>* 功能类似，具体请见[git rm --cached <file>与git reset HEAD -- <file>的区别](https://stackoverflow.com/questions/5798930/git-rm-cached-x-vs-git-reset-head-x)
+有一个命令*git reset HEAD -- < file >* 功能与 *git rm --cached < file >* 功能类似，具体请见[git rm --cached < file >与git reset HEAD -- < file >的区别](https://stackoverflow.com/questions/5798930/git-rm-cached-x-vs-git-reset-head-x)
 
 ## 3.4 查看修改
 写一点项目代码
@@ -159,7 +159,7 @@ $ git diff
 ```
 ![git diff的输出](rc/gitdiff-output.png)
 
->第一行：*diff --git a/src/hello/hello.h b/src/hello/hello.h*，*git diff*实质上用的是diff的文本比较工具,其中*a/src/hello/hello.h*代表源文件,也就是修改前的文件，*b/src/hello/hello.h*代表比目标文件，也就是修改后的文件;
+>第一行：*diff --git a/src/hello/hello.h b/src/hello/hello.h*，*git diff*实质上用的是diff的文本比较工具,其中*a/src/hello/hello.h*代表源文件,也就是修改前的文件，*b/src/hello/hello.h*代表目标文件，也就是修改后的文件;
 
 >第二行：*index 98963f7..25dc952 100644*, index后面两个16进制值表示两个文件的hash值，最后的数字是文件的权限和属性。
 
@@ -255,10 +255,10 @@ Date:   Sat Mar 2 14:21:38 2019 +0800
     first commit
 
 ```
-一个常用的选项是 -p,用来显示每次提交的内容差异。你也可以加上 -<n> 来仅显示最近n次提交。git log参数超多，毫无疑问有各种筛选功能，具体请看man git log。
+一个常用的选项是 -p,用来显示每次提交的内容差异。你也可以加上 -\<n\> 来仅显示最近n次提交。git log参数超多，毫无疑问有各种筛选功能，具体请看man git log。
 
 ## 3.8 文件(夹)的移动和改名
-与Linux*mv*命令相似，文件(夹)的移动和改名共用同一个命令*git mv*，修改名含有路径参数即是移动。将* *.md*文件放入其专属的文件夹内
+与Linux的*mv*命令相似，文件(夹)的移动和改名共用同一个命令*git mv*，修改名含有路径参数即是移动。将* *.md*文件放入其专属的文件夹内
 ```sh
 $ git mv Ubuntu-18.04安装与配置.md doc/Ubuntu-18.04安装与配置.md
 fatal: not under version control, source=Ubuntu-18.04安装与配置.md, destination=doc/Ubuntu-18.04安装与配置.md
