@@ -1,4 +1,10 @@
 # 内容概要
+1. 查看命令的简要说明、详细文档以及位置
+1. 对整个文件、文件夹的创建、删除、移动、复制
+1. 切换目录、列出文件，查找文件
+1. 文件内容的显示、查找文件内容
+1. 文件权限的含义、如何改变文件权限
+1. 重定向和管道
 
 # 参考文献
 1. [difference-between-man-and-info](http://www.differencebetween.net/technology/software-technology/difference-between-man-and-info/)
