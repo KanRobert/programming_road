@@ -39,7 +39,7 @@ $ man info
 $ info man
 ```
 在man的帮助手册中，将帮助文档分为了9个类别
->(1). 用户可以操作的命令或者是可执行文件\
+>(1)、用户可以操作的命令或者是可执行文件\
 (2)、系统核心可调用的函数与工具等
 \
 (3)、一些常用的函数与数据库
@@ -50,7 +50,7 @@ $ info man
 \
 (6)、游戏
 \
-(7)、惯例与协议等。例如Linux标准文件系统、网络协议、ASCⅡ，码等说明内容
+(7)、惯例与协议等。例如Linux标准文件系统、网络协议、ASCⅡ码等说明内容
 \
 (8)、系统管理员可用的管理条令
 \
@@ -258,7 +258,7 @@ $ grep -rF -f keyword.txt /etc/group
 ```sh
 $ grep -rE '<regular expression>' /etc/group
 ```
-正则表达式Example
+正则表达式例子
 * ```.at ``` ：任意以at结尾的三字符组
 * ```[hc]at``` : “hat”和“cat”
 * ```[^b]at``` :  ```.at ```能表示的字符组中除了“bat”
@@ -283,16 +283,18 @@ $ ls -l file.txt
 
 可以用```chmod <options> <permissions> <filename>```来改变文件的权限
 ```sh
-# u、g、o分别代表"user","group","other". r,w,x分别代表“read”,"write","execute"，”=“表示将这个文件在等于号右边的权限精确设置给等于号左边的群体。
-chmod u=rwx,g=rx,o=r myfile
+# u、g、o分别代表"user","group","other". 
+# r,w,x分别代表“read”,"write","execute"，
+# ”=“表示将这个文件在等于号右边的权限精确设置给等于号左边的群体。
+$ chmod u=rwx,g=rx,o=r myfile
 ```
 常见的，我们可以用利用8进制数来简化这条命令，将u,g,o所拥有的权限以一个8进制数表示，保持其顺序不变。8进制数由权限相加得到，其中r表示4，w表示2，x表示1。上面的命令等价于
 ```sh
-chmod 754 myfile
+$ chmod 754 myfile
 ```
 我们还以加上-R参数递归地改变文件夹及其下文件的权限
 ```sh
-chmod 755 myfold
+$ chmod 755 myfold
 ```
 ## 2.9 命令连接、重定向和管道
 ### 2.9.1 命令连接
@@ -343,7 +345,9 @@ ls: cannot access blah.foo: No such file or directory
 ```
 重定向标准输出和标准Error到文件
 ```sh
-$ ls -l video.mpg blah.foo > errors.txt 2>&1 # 先重定向标准输出到文件,再重定向标准Error到标准输出， &符号是为了防止标准Error被重定向到名为1的文件
+# 先重定向标准输出到文件,再重定向标准Error到标准输出,
+# &符号是为了防止标准Error被重定向到名为1的文件
+$ ls -l video.mpg blah.foo > errors.txt 2>&1 
 $ cat errors.txt #输出errors.txt文件的内容
 ls: cannot access blah.foo: No such file or directory
 -rwxr--r-- 1 ryan users 6 May 16 09:14 video.mpg
