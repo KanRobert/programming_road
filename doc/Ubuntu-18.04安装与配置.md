@@ -328,17 +328,3 @@ git remote add origin git@github.com:<your-user-name>/<your-repository-name>.git
 git push -u origin master
 ```
 完成～
-
-
-
-
-
-
-
-
-
-
-
-
-
-

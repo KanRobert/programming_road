@@ -304,8 +304,3 @@ $ git commit -m "add git basics"
 ```sh
 $ git push origin master
 ```
-
-
-
-
-

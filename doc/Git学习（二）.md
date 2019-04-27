@@ -150,7 +150,9 @@ $ git cat-file -p fd9d6c5609ead8f359956594cdc3018b1eaad3bb
 
 # 2. Git中的三棵树
 在理解了Git对象以后，我们重新审视一下Git的三个工作区
+
 ![Git的工作区域](rc/git-workspace.png)
+
 Git作为内容管理系统，是以三棵树分别管理三个工作区的
 树 | 用途 | 负责的工作区
 ---- | ---- | ----
@@ -201,37 +203,44 @@ $ git init
 $ vim file.txt
 ```
 ![最早的三棵树](rc/three-tree-init.png)
+
 调用*git add*暂存
 ```sh
 $ git add .
 ```
 ![git add后的三颗树](rc/three-tree-git-add.png)
+
 调用*git commit*提交
 ```sh
 $ git commit -m 'first commit'
 ```
 ![git commit后的三颗树](rc/three-tree-git-commit.png)
+
 修改file.txt文件
 ```sh
 $ vim file.txt
 ```
 ![edit file后的三颗树](rc/three-tree-edit-file.png)
+
 再次调用*git add*暂存
 ```sh
 $ git add .
 ```
 ![再次git add后的三颗树](rc/three-tree-git-add-2.png)
+
 再次调用*git commit*提交
 ```sh
 $ git commit -m 'second commit'
 ```
 ![再次git commit后的三颗树](rc/three-tree-git-commit-2.png)
+
 修改file.txt文件后再次提交
 ```sh
 $ vim file.txt 
 $ git commit -a -m 'third commit'
 ```
 ![第三次git commit后的三颗树](rc/three-tree-git-commit-3.png)
+
 *git status*本质上就是比较三棵树的内容，当三棵树里的内容相同时，我们调用*git status*就会发现
 ```sh
 $ git status
@@ -243,40 +252,48 @@ nothing to commit, working tree clean
 $ git reset --soft 9e5e64ash
 ```
 ![git reset -- soft后的三颗树](rc/three-tree-git-reset-soft.png)
+
 情况2：调用*git reset \[--mixed\]*移动HEAD指向的分支
 ```sh
 $ git reset --mixed 9e5e64ash
 ```
 ![git reset -- mixed后的三颗树](rc/three-tree-git-reset-mixed.png)
+
 情况3：调用*git reset --hard*移动HEAD指向的分支
 ```sh
 $ git reset --hard 9e5e64ash
 ```
 ![git reset -- hard后的三颗树](rc/three-tree-git-reset-hard.png)
+
 情况4：调用*git reset*只拉取一个文件的特定版本
 ```sh
 $ git reset eb43 -- file.txt
 ```
 ![git reset拉取文件特定版本](rc/three-tree-git-reset-specified.png)
+
 情况5：调用*git checkout*只拉取一个文件的特定版本
 ```sh
 $ git checkout eb43 -- file.txt
 ```
 ![git checkout拉取文件特定版本](rc/three-tree-git-checkout-specified.png)
+
 ## 2.5 小trick之压缩提交
 假设你有一个项目,第一次提交中有一个文件,第二次提交增加了一个新的文件并修改了第一个文件,第三次提交再次修改了第一个文件。由于第二次提交是一个未完成的工作,因此你想要压缩它。
 ![压缩提交前的最初样子](rc/compress-commit-init.png)
+
 调用*git reset*将HEAD指向其祖父提交对象上(即你想要保留的第
 一个提交)
 ```sh
 $ git reset --soft HEAD~2
 ```
 ![移动HEAD到想保留的第一个提交上](rc/compress-commit-git-reset.png)
+
 再次提交
 ```sh
 $ git commit -m 'second commit'
 ```
 ![压缩提交后的结果](rc/compress-commit-git-commit.png)
+
 如果现在你查看提交历史，会有个 v1 版 file-a.txt 的提交,接着第二个提交将 file-a.txt 修改成了 v3 版并增加file-b.txt。包含 v2 版本的文件已经不在历史中了。
 
 # 3. Git分支
