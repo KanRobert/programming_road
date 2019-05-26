@@ -55,7 +55,7 @@ $ clang -c -emit-llvm factorial.c # factorial.bc
 ```
 我们可以利用`grep`命令查看`clang`参数的含义
 ```sh
-$ clang --help | grep -w -- -[Sc]factorial.ll
+$ clang --help | grep -w -- -[Sc]
 -c  Only run preprocess, compile, and assemble steps
 -S  Only run preprocess and compilation steps
 ```

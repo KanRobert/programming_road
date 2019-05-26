@@ -277,3 +277,7 @@ fg : 切回vim
 :set nu : 显示行号
 :set nonu : 不显示行号
 ```
+
+```
+vim <filename> -u NONE : 不使用vimrc配置打开文件
+```
