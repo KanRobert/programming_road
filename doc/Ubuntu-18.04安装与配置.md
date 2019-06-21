@@ -155,7 +155,7 @@ git config --global user.email "your-email"
 ```
 为Github账号添加SSH Keys,生成的keys会保存在~/.ssh/下
 ```sh
-ssh -keygen -t rsa -C "your-email"
+ssh-keygen -t rsa -C "your-email"
 ```
 打开文件~/.ssh/id_rsa.pub，将公钥复制到Github中**github-> Settings-> SSH and GPG Keys-> New SSH key**
 

@@ -5,13 +5,14 @@
 1. 词法分析器（Lexer）
 
 # 参考文献
+[strtod 说明](https://en.cppreference.com/w/c/string/byte/strtof)
 
 # 1. 文档介绍和词法分析器
 
 ## 1.1 文档介绍
 本文档将介绍一门简单语言**Kaleidoscope**的实现，让你可以轻松开心地上手LLVM，在这里学到的知识可以拓展到其他语言。
 
-## 1.2 基础语言
+## 1.2 要实现的语言
 * 语言名称： Kaleidoscope
 * 支持的操作：
     1. if/then/else 结构
@@ -66,49 +67,69 @@ lexer返回的token代码要么是枚举型```Token```的可取值之一，要�
 我们只用一个函数```gettok```就可以实现我们的lexer，当我们调用```gettok```时，其会从标准输入返回下一个token，并且可能设置```IdentifierStr```或```NumVal```的值。我们将```gettok```的定义拆成若干部分分别阐述:
 
 ```Cpp
-1 // gettok - Return the next token from standard input.
-2 static int gettok() {
-3     static int LastChar = ' ';
-4 
-5     // Skip any whitespace.
-6     while (isspace(LastChar))
-7         LastChar = getchar();
+/// gettok - Return the next token from standard input.
+static int gettok() {
+    static int LastChar = ' ';
+    // Skip any whitespace.
+    while (isspace(LastChar))
+        LastChar = getchar();
 ```
+``` ```
 ```Cpp
-8     if (isalpha(LastChar)) { // identifier: [a-zA-Z][a-zA-Z0-9]*
-9         IdentifierStr = LastChar;
-10         while (isalnum((LastChar = getchar())))
-11             IdentifierStr += LastChar;
-12 
-13         if (IdentifierStr == "def") return tok_def;
-14         if (IdentifierStr == "extern") return tok_extern;
-15         return tok_identifier;
-16     }                                                                      
-17     if (isdigit(LastChar) || LastChar == '.') {   // Number: [0-9.]+
-18         std::string NumStr;
-19         do {
-20             NumStr += LastChar;
-21             LastChar = getchar();
-22         } while (isdigit(LastChar) || LastChar == '.');
-23 
-24         NumVal = strtod(NumStr.c_str(), 0);
-25         return tok_number;
-26     }   
-27     if (LastChar == '#') {
-28         // Comment until end of line.
-29         do
-30             LastChar = getchar();
-31         while (LastChar != EOF && LastChar != '\n' && LastChar != '\r');
-32 
-33         if (LastChar != EOF) return gettok();
-34     }
-35       // Check for end of file.  Don't eat the EOF.
-36     if (LastChar == EOF) return tok_eof;
-37 
-38     // Otherwise, just return the character as its ascii value.
-39     int ThisChar = LastChar;
-40     LastChar = getchar();      
-41     return ThisChar;
-42 }                         
+    if (isalpha(LastChar)) { // identifier: [a-zA-Z][a-zA-Z0-9]*
+        IdentifierStr = LastChar;
+        while (isalnum((LastChar = getchar())))
+            IdentifierStr += LastChar;
+
+        if (IdentifierStr == "def") return tok_def;
+        if (IdentifierStr == "extern") return tok_extern;
+        return tok_identifier;
+    }
 ```
-```gettok```调用C语言的```getchar()```从标准输入每次读取一个字符。读到的字符会放在```LastChar```中
+``` ```
+```Cpp
+    if (isdigit(LastChar) || LastChar == '.') {   // Number: [0-9.]+
+        std::string NumStr;
+        do {
+            NumStr += LastChar;
+            LastChar = getchar();
+        } while (isdigit(LastChar) || LastChar == '.');
+
+        NumVal = strtod(NumStr.c_str(), 0);
+        return tok_number;
+    }   
+```
+``` ```
+```Cpp
+    if (LastChar == '#') {
+        // Comment until end of line.
+        do
+            LastChar = getchar();
+        while (LastChar != EOF && LastChar != '\n' && LastChar != '\r');
+
+        if (LastChar != EOF) return gettok();
+    }
+```
+``` ```
+```Cpp
+    // Check for end of file.  Don't eat the EOF.
+    if (LastChar == EOF) return tok_eof;
+
+    // Otherwise, just return the character as its ascii value.
+    int ThisChar = LastChar;
+    LastChar = getchar();
+    return ThisChar;
+}
+```
+```gettok```调用C语言的```getchar()```从标准输入读取字符，忽略空白字符，并将读到的第一个非空白字符会放在```LastChar```中。
+
+**Kaleidoscope**的标识符以字母开头，后面跟任意个字母或数字（关键字属于特殊的标识符）。如果读到的第一个字符是字母，我们就从标准输入贪心地读取符合```[a-zA-Z][a-zA-Z0-9]*```的字符串到```IdentifierStr```中。如果```IdentifierStr```是```def```或者```extern```就返回相应的token代码，否则返回标识符对应的token代码（```tok_identifier```）。
+
+如果读到的第一个字符是数字或者小数点，我们就从标准输入贪心地读取符合```[0-9.]+*```的字符串到```NumStr```中。```[0-9.]+*```表示数字/小数点出现一次或多次，显然这样读到的不一定是个number，譬如“1.23.45.67”，但是我们暂时忽略这个情况。接着我们调用C语言的```strtod```函数将```NumStr```转化为数值存放在```NumVal```中，转化也是贪心的，例如“1.23.45.67”会被转化为1.23。转化完成后返回number对应的token代码（```tok_number```）。
+
+**Kaleidoscope**的注释为单行注释，以```# ```开头，以换行符结束，当前
+```# ```右侧的所有内容都会被编译器忽略，这种注释可以包含任何文本，也包括额外的```# ```。如果读到的第一个字符是```# ```，我们就利用循环结构跳过当前行，只要未达到文件尾，就返回下一个token。
+
+最后，如果读到的字符上述情况都不满足。先判断它是不是文件结束符。如果是，返回```tok_eof```，否则返回该字符的ascii码。
+
+> Note ：在返回每个token之前（文件结束符除外），我们都多consume了一个字符。譬如在处理"a1.9 "的时候，将"a1"作为标识符返回之前，我们将'.'符号consume掉了，下次在调用```gettok()```的时候，就会cosume掉"9 "并返回一个"tok_number"。也就是说，在贪心地读取字符作为合法token时，第一个使贪心过程退出的字符充当了token间的分隔符。
