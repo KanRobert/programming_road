@@ -4,11 +4,11 @@
 # 参考文献
 1. [Production rule](https://en.wikipedia.org/wiki/Production_(computer_science))
 1. [Formal grammar](https://en.wikipedia.org/wiki/Formal_grammar)
-1. <<自己手动构造编译系统>>
-1. <<编译器设计>>
+1. `<<自己手动构造编译系统>>`
+1. `<<编译器设计>>`
 1. [为什么递归下降分析中要消除左递归？](https://www.zhihu.com/question/28397643)
 1. [如何关闭gdb的layout?](https://stackoverflow.com/questions/8409540/how-to-close-layout-src-windows-in-gdb) `Ctrl+x+a`
-1. 
+1. `<<Engineering a Compiler>>` chapter 3
 
 # 1. 产生式(Production)
 在编译原理中, **产生式** 就是符号替换的重写规则，根据这些重写规则，我们可以由一个符号递归地产生多个符号序列。通常我们在产生式中用 **大写字母** 表示 **非终结符** (需要被继续替换的符号)，用 **小写字母** 表示 **终结符** （不需要且不能被替换的符号）。譬如，下面这条产生式中
@@ -24,14 +24,16 @@ Chomsky于1956年建立了形式语言的描述，他把文法分为四种类型
 前面讨论的词法记号属于3型文法，使用 **确定有限状态自动机(DFA)** 就可以识别，程序设计语言通常使用的是2型文法，需要进行语法分析才能识别。
 
 # 3. 语法分析的作用
-**语法分析器(Parser)** 获取词法分析器提供的词法记号序列，根据高级语言文法的结构，识别不同的语法模块。经Parser处理后，高级语言源代码表现为一颗完整的抽象语法树，抽象语法树的子树（包括抽象语法树本身）也称为 **语法模块**。
+**语法分析器(Parser)** 获取词法分析器提供的词法记号序列，根据高级语言文法的结构，构造一颗完整的 **抽象语法树(AST)** ，抽象语法树的子树（包括抽象语法树本身）也称为 **语法模块**。抽象语法树的根节点就表示语法的起始符号，抽象语法树的叶子节点，从左到右依次与词法分析器(Lexer)返回的词法记号(Token)对应。
 
 ![Parser inoutput](rc/parser-inoutput.png)
+## 3.1 自顶向下的 Parser
+根据构造语法树的方式，我们可以将Parser分成自顶向下的Parser和自底向上的Parser。自底向上的Parser我们不研究。在构造抽象语法树(AST)的过程中，自顶向下的Parser从根节点开始，一步步扩展AST一直到其叶子节点与Lexer返回的词法记号匹配。
 
-# 4. LL(1) Parser
+# 3.2 LL(1) Parser
 我们这里要实现的Parser是LL(1) Parser，**LL(1)** Parser是一种高效的自顶向下的Parser。其得名于以下事实：这种Parser由左(Left, L)向右扫描其输入，构建一个最左推导(Leftmost, L)，仅使用一个前看符号(1)。编译器GCC也是使用LL Parser完成C语言的语法分析的，不过GCC使用的是LL(2)分析算法。
 
-## 4.1 LL(1) Parser对产生式的要求
+# 4. LL(1) Parser对产生式的要求
 LL(1) Parser要求产生式必须是**右递归**、**右侧无左公因子**。
 
 为什么有这两个要求呢？这是因为LL(1) Parser需要在前看一个符号（词法记号）的情况下唯一确定产生式使用哪一个重写规则。如果出现左递归，譬如下面这条产生式
@@ -226,7 +228,54 @@ extern int name();
 ```
 <localdef>-><type><defdata><deflist>
 ```
-## 10.2 语句`<statement>`的产生式
-```S
-
+# 11. 语句`<statement>`的产生式
+## 11.1 表达式`<expr>`的产生式
+赋值表达式`<assexpr>`
+```
+<assexpr>-><orexpr><asstail>
+<asstail>->assign <orexpr><asstail> | ε
+```
+逻辑或表达式`<orexpr>`
+```
+<orexpr>-><andexpr><ortail>
+<ortail>->or <andexpr><ortail> | ε
+```
+逻辑与表达式`<andexpr>`
+```
+<andexpr>-><cmpexpr><andtail>
+<andtail>->and <cmpexpr><andtail> | ε
+```
+关系表达式`<cmpexpr>`
+```
+<cmpexpr>-><addsubexpr><cmptail>
+<cmptail>-><cmps><addsubexpr><cmptail> | ε
+<cmps>->gt | ge | lt | le | equ | nequ 
+```
+加减法运算表达式`<addsubexpr>`
+```
+<addsubexpr>-><muldivmodexpr><addsubtail> 
+<addsubtail>-><addsub><muldivmodexpr><addsubtail> | ε
+<addsub>->add | sub
+```
+乘除求余运算表达式`<muldivmodexpr>`
+```
+<muldivmodexpr>-><unaryexpr><muldivmodetail>
+<muldivmodetail>-><muldivmode><unaryexpr><muldivmodetail>
+<muldivmode>-> mul | div | mod
+```
+单目运算表达式`<unaryexpr>`
+```
+<unaryexpr>-><unary><unaryexpr> | <val>
+<unary>->not | sub | lea | mul | incr | decr
+```
+值表达式`<val>`
+```
+<val>-><elem><incrdecr>
+<incrdecr>->incr | decr
+```
+元素表达式`<elem>`, 包含变量、数组、函数调用、小括号和常量。
+```
+<elem>->ID
+      | ID LBRACK <expr> RBRACK
+      | ID LPAREN <realarg> 
 ```
